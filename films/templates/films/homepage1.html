@@ -25,6 +25,9 @@
                                 + Watchlist
                             {% endif %}
                         </button>
+                        <a href="{% url 'films:trailer_view' film.pk %}" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+                            Trailer
+                        </a>
                     </div>
                 </div>
             </div>

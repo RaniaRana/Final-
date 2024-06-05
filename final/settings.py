@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-$zwr!k468_67zny^9+c&6)umsil*^s#rfk5n+n%%@m7^_2l5mt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = raniafinal.imdbclone
 
 
 # Application definition
