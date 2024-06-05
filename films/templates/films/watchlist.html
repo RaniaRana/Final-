@@ -1,0 +1,41 @@
+<!-- watchlist.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Your Watchlist</h1>
+    <hr>
+    <div class="container">
+        <div class="row">
+            {% for item in watchlist_items %}
+            <div class="col-12 mb-3">
+                <div class="card h-100">
+                    <div class="row no-gutters">
+                        <div class="col-md-3">
+                            <a href="{% url 'films:f_detail' item.film.pk %}">
+                                <img src="{{ item.film.poster }}" class="card-img" alt="{{ item.film.title }}">
+                            </a>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a class="text-decoration-none" href="{% url 'films:f_detail' item.film.pk %}">{{ item.film.title }}</a>
+                                </h5>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <span class="bi bi-star-fill text-warning"></span> {{ item.film.average_rating|floatformat:1 }} 
+                                        | {{ item.film.released.year }} 
+                                        | {{ item.film.certificate }} 
+                                        | {{ item.film.genre }}
+                                    </small>
+                                </p>
+                                <p class="card-text">{{ item.film.overview|truncatewords:30 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

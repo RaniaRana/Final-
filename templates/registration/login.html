@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content%}
+<div class="container">
+	<div class="d-flex justify-content-center h-100">
+		<div class="card">
+			<div class="card-header">
+				<h3>Sign In</h3>
+				<div class="d-flex justify-content-end social_icon">
+					<a href="{% url 'social:begin' 'google-oauth2' %}"><span><i class="bi bi-google"></i></span></a>
+				</div>
+			</div>
+			<div class="card-body">
+				<form method="post">
+                    {% csrf_token %}
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+						</div>
+						{{ form.username }}
+					</div>
+                    <br>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+						</div>
+                        {{ form.password }}
+					</div>
+                    <br>
+					<div class="row align-items-center remember">
+						<input type="checkbox">Remember Me
+					</div>
+                    <br>
+					<div class="form-group">
+						<input type="submit" value="Login" class="btn float-right login_btn">
+					</div>
+				</form>
+			</div>
+			<div class="card-footer">
+                <div class="d-flex justify-content-center">
+                    <span>Don't have an account? <a href="{% url 'films:register' %}">Register</a></span>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+{% endblock %}

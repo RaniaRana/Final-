@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-center h-100">
+        <div class="card">
+            <div class="card-header">
+                <h3>Register</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div><label for="name" class="cols-sm-2 control-label">Your Name</label></div>
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        </div>
+                        {{ form.name }}
+                    </div>
+                    <div><label for="name" class="cols-sm-2 control-label">Your Surname</label></div>
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        </div>
+                        {{ form.surname }}
+                    </div>
+                    <div><label for="name" class="cols-sm-2 control-label">Username</label></div>
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="bi bi-people-fill"></i></span>
+                        </div>
+                        {{ form.username }}
+                    </div>
+                    <div><label for="name" class="cols-sm-2 control-label">Your EMail</label></div>
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                        </div>
+                        {{ form.email }}
+                    </div>
+                    <div><label for="name" class="cols-sm-2 control-label">Password</label></div>
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+                        </div>
+                        {{ form.password }}
+                    </div>
+                    <div><label for="name" class="cols-sm-2 control-label">Confirm Password</label></div>
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+                        </div>
+                        {{ form.confirm_password }}
+                    </div>
+                    <br>
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="bi bi-geo-fill"></i></span>
+                        </div>
+                        <select id="country" name="country" class="form-control">
+                            <option value="">Select Country</option>
+                            {% for country in countries %}
+                                <option value="{{ country }}">{{ country }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="input-group-prepend ms-3">
+                            <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+                        </div>
+                        <select id="city" name="city" class="form-control">
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input type="submit" value="Register" class="btn float-right login_btn">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+document.getElementById('country').addEventListener('change', function() {
+    var country = this.value;
+    var citySelect = document.getElementById('city');
+    citySelect.innerHTML = '<option value="">Select City</option>';
+
+    if (country) {
+        fetch(`/get_cities/?country=${country}`)
+            .then(response => response.json())
+            .then(data => {
+                data.cities.forEach(city => {
+                    var option = document.createElement('option');
+                    option.value = city;
+                    option.text = city;
+                    citySelect.appendChild(option);
+                });
+            });
+    }
+});
+</script>
+{% endblock %}

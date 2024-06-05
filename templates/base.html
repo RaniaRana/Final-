@@ -1,0 +1,295 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>IMDB</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7ie3L6D2e6N5t5hpvmoTlf10rvZ8ovd15tR" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha384-Gd0yab3mb8bVDvPNKcWw4shwXvrrH0wTv3KJjbTEh/5vrr2G03gvYazpw8n5Z9Oj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="{% static 'js/htmx.min.js' %}" defer></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', () => {
+                const searchInput = document.getElementById('search-input');
+                const resultsContainer = document.getElementById('results');
+                const searchCategory = document.getElementById('search-category');
+            
+                function highlight(text, query) {
+                    const regex = new RegExp(`(${query})`, 'gi');
+                    return text.replace(regex, '<strong>$1</strong>');
+                }
+            
+                searchInput.addEventListener('input', () => {
+                    const query = searchInput.value.toLowerCase();
+                    const category = searchCategory.value;
+                    resultsContainer.innerHTML = '';
+                
+                    if (query) {
+                        fetch(`/autocomplete/?term=${query}&category=${category}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.length > 0) {
+                                    data.forEach(item => {
+                                        const li = document.createElement('li');
+                                        const img = document.createElement('img');
+                                        img.src = item.poster;
+                                        img.alt = item.title;
+                                        img.style.width = '50px';
+                                        img.style.marginRight = '10px';
+                                    
+                                    
+                                        li.appendChild(img);
+
+                                        if (category === 'title' || category === 'all') {
+                                            li.innerHTML += highlight(item.title, query);
+                                        } else if (category === 'director') {
+                                            li.innerHTML += highlight(item.director, query);
+                                        } else if (category === 'stars') {
+                                            li.innerHTML += highlight(item.Star, query); //star
+                                        } 
+
+                                        li.addEventListener('click', () => {
+                                            searchInput.value = item.title;
+                                            resultsContainer.innerHTML = '';
+                                            resultsContainer.style.display = 'none';
+                                        });
+                                        resultsContainer.appendChild(li);
+                                    });
+                                    resultsContainer.style.display = 'block';
+                                } else {
+                                    resultsContainer.innerHTML = '<li>No results found</li>';
+                                    resultsContainer.style.display = 'block';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching autocomplete data:', error);
+                            });
+                    } else {
+                        resultsContainer.style.display = 'none';
+                    }
+                });
+            
+                document.addEventListener('click', (event) => {
+                    if (!resultsContainer.contains(event.target) && event.target !== searchInput) {
+                        resultsContainer.style.display = 'none';
+                    }
+                });
+            });
+        </script>                 
+        <style>
+            .autocomplete-item {
+                display: flex;
+                align-items: center;
+                padding: 8px;
+                cursor: pointer;
+                text-align: left;
+            }
+            .autocomplete-item:hover {
+                background-color: #f1f1f1;
+            }
+            .autocomplete-item img {
+                width: 50px;
+                height: auto;
+                margin-right: 10px;
+            }
+        </style>                     
+        <style>
+            #results {
+                position: absolute;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                max-height: 200px;
+                overflow-y: auto;
+                background-color: gray;
+                width: 100%;
+                z-index: 1000;
+                display: none;
+                top: 100%; /* Adjust the position to be just below the input */
+                left: 0;
+            }
+            #results li {
+                display: flex;
+                align-items: center;
+                padding: 8px;
+                cursor: pointer;
+                flex-direction: row;
+                text-align: left;
+            }
+            #results li:hover {
+                background-color: #f1f1f1;
+            }
+            #results img {
+                width: 50px;
+                height: auto;
+                margin-right: 10px;
+            }
+        </style> 
+        <style>
+            .trailer {
+                width: 750px;
+                height: 500px;
+                padding-bottom: 56.25%; /* 16:9 aspect ratio */
+                position: relative;
+            }
+            .trailer iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }   
+            .rating-section {
+                display: flex;
+                align-items: flex-start;
+                justify-content: flex-end; 
+                margin-top: 1rem; 
+            }
+            .rating-section .imdb-rating, .rating-section .user-rating, .rating-section .popularity-rating {
+                text-align: center;
+                margin-left: 3rem; 
+            }
+            .rating-section p {
+                margin: 0.5rem 0;
+            }
+            .rating-section strong {
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+            </style>    
+        {% block css %} {% endblock %}
+    </head>
+    <body data-bs-theme="dark" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'films:home' %}"><img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" width="64" height="32"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% trans "Menu" %}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="menuDropdown">
+                                <li><a class="dropdown-item" href="{% url 'films:home' %}">{% trans "Home" %}</a></li>
+                                <li><a class="dropdown-item" href="{% url 'films:top25' %}">{% trans "Top25" %}</a></li>
+                                <li><a class="dropdown-item" href="{% url 'films:bottom25' %}">{% trans "Bottom25" %}</a></li>
+                                {% if request.user.is_authenticated %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'films:watchlist' %}">{% trans "Watchlist" %}</a>
+                                </li>
+                                {% else %}
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'login' %}?next={% url 'films:watchlist' %}">{% trans "Watchlist" %}</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                        <ul>
+                            <li><a href="http://127.0.0.1:8000/en/">EN</a></li>
+                            <li><a href="http://127.0.0.1:8000/tr/">TR</a></li>
+                        </ul>
+                    </ul>
+                    <div class="d-flex">
+                        <form class="d-flex" role="search" action="{% url 'films:search_results' %}" method="get">
+                            <div style="position: relative; display: flex; align-items: center;">
+                                <input id="search-input" name="q" class="form-control me-2" type="search" placeholder="{% trans "Search" %}" aria-label="{% trans "Search" %}">
+                                <button class="btn btn-outline-warning me-2" type="submit">{% trans "Search" %}</button>
+                                <select id="search-category" name="category" class="form-select" style="width: auto; margin-left: 10px;">
+                                    <option value="all">{% trans "All" %}</option>
+                                    <option value="title">{% trans "Title" %}</option>
+                                    <option value="director">{% trans "Director" %}</option>
+                                    <option value="stars">{% trans "Star" %}</option>
+                                </select>
+                                <ul id="results" class="list-unstyled position-absolute w-100"></ul>
+                            </div>
+                        </form>                                                                    
+                        {% if request.user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-warning dropdown-toggle" type="button" id="userDropdown"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ request.user.username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{% url 'films:watchlist' %}">{% trans "Watchlist" %}</a></li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button class="dropdown-item" type="submit">{% trans "Logout" %}</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        {% else %}
+                        <a class="btn btn-outline-warning" href="{% url 'login' %}">{% trans "Login" %}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container"> 
+            {% block content %} {% endblock content %}
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7ie3L6D2e6N5t5hpvmoTlf10rvZ8ovd15tR" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha384-Gd0yab3mb8bVDvPNKcWw4shwXvrrH0wTv3KJjbTEh/5vrr2G03gvYazpw8n5Z9Oj" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#search-input").autocomplete({
+                    source: "{% url 'films:autocomplete_search' %}",
+                    minLength: 2,
+                    select: function(event, ui) {
+                        window.location.href = "{% url 'films:search_results' %}?q=" + ui.item.value;
+                    }
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const buttons = document.querySelectorAll('.watchlist-btn');
+                buttons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const filmId = this.getAttribute('data-film-id');
+                        const button = this;
+                        const isAuthenticated = "{{ request.user.is_authenticated }}";  // Check if user is authenticated
+                        const loginUrl = "{{ login_url }}";  // Get login URL
+    
+                        if (isAuthenticated === "False") {
+                            window.location.href = loginUrl;
+                            return;
+                        }
+    
+                        fetch("{% url 'films:add_to_watchlist' 0 %}".replace('0', filmId), {
+                            method: 'GET',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'added') {
+                                button.innerHTML = '&#x2713; Watchlist';
+                                alert('Film added to watchlist.');
+                            } else if (data.status === 'exists') {
+                                alert('Film is already in your watchlist.');
+                            }
+                        });
+                    });
+                });
+            });
+        </script>      
+    </body>
+</html>

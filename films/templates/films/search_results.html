@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Search Results for "{{ query }}"</h1>
+    <hr>
+
+    {% if category == 'title' %}
+        {% if title_results %}
+            <h2><strong>Title</strong></h2>
+            <div class="row row-cols-1 row-cols-md-4 g-4">
+                {% for film in title_results %}
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="{{ film.poster }}" class="card-img-top" alt="{{ film.title }}">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ film.title }}</h5>
+                                <p class="card-text">Directed by: {{ film.director }}</p>
+                                <div class="mt-auto">
+                                    <a href="{% url 'films:f_detail' film.pk %}" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No results found for "{{ query }}" in Titles</p>
+        {% endif %}
+    {% endif %}
+
+    {% if category == 'director' %}
+        {% if director_results %}
+            <h2><strong>Director</strong></h2>
+            <div class="row row-cols-1 row-cols-md-4 g-4">
+                {% for director in director_results %}
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="{{ director.director_pic }}" class="card-img-top" alt="{{ director.director }}">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ director.director }}</h5>
+                                <p class="card-text">{{ director.title }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No results found for "{{ query }}" in Directors</p>
+        {% endif %}
+    {% endif %}
+
+    {% if category == 'stars' %}
+        {% if star_results %}
+            <h2><strong>Stars</strong></h2>
+            <div class="row row-cols-1 row-cols-md-4 g-4">
+                {% for star in star_results %}
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="{{ star.star_pic }}" class="card-img-top" alt="{{ star.star_name }}">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ star.star_name }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No results found for "{{ query }}" in Stars</p>
+        {% endif %}
+    {% endif %}
+
+    {% if category == 'all' %}
+        {% if title_results or director_results or star_results %}
+            <h2><strong>All Results</strong></h2>
+            {% if title_results %}
+                <h3>Title</h3>
+                <div class="row row-cols-1 row-cols-md-4 g-4">
+                    {% for film in title_results %}
+                        <div class="col">
+                            <div class="card h-100">
+                                <img src="{{ film.poster }}" class="card-img-top" alt="{{ film.title }}">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">{{ film.title }}</h5>
+                                    <p class="card-text">Directed by: {{ film.director }}</p>
+                                    <div class="mt-auto">
+                                        <a href="{% url 'films:f_detail' film.pk %}" class="btn btn-primary">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if director_results %}
+                <h3>Director</h3>
+                <div class="row row-cols-1 row-cols-md-4 g-4">
+                    {% for director in director_results %}
+                        <div class="col">
+                            <div class="card h-100">
+                                <img src="{{ director.director_pic }}" class="card-img-top" alt="{{ director.director }}">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">{{ director.director }}</h5>
+                                    <p class="card-text">{{ director.title }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if star_results %}
+                <h3>Stars</h3>
+                <div class="row row-cols-1 row-cols-md-4 g-4">
+                    {% for star in star_results %}
+                        <div class="col">
+                            <div class="card h-100">
+                                <img src="{{ star.star_pic }}" class="card-img-top" alt="{{ star.star_name }}">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">{{ star.star_name }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% else %}
+            <p>No results found for "{{ query }}"</p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content%}
+    <h1>IMDB Clone </h1>
+    <hr>
+
+    <div class="row row-cols-5">
+    {%for film in films %}
+    <div class="mb-3">
+        <div class="card bg-body-tertiary" style ="min-height: 450px;">
+            <a href="{% url 'films:f_detail' film.pk %}">
+                <img src="{{film.poster}}" class="card-img-top" height ="300px" width="200px" alt="...">
+            </a>
+            <div class="card-body">
+                <h4> 
+                    <i class="bi bi-star-fill text-warning"></i> <span class="me-5">{{film.average_rating|floatformat:1}}</span>
+                    <i class="bi bi-star text-primary"></i>
+                </h4>
+                <h5><a class="text-decoration-none" href="{% url 'films:f_detail' film.pk %}">{{film.title}}</a></h5>
+            </div>
+        </div>
+    </div>
+        <!--<p><a href="{% url 'films:f_detail' film.pk %}">{{film.title}}</a></p>-->
+    {% endfor %}
+    </div>
+
+
+{% endblock content %}

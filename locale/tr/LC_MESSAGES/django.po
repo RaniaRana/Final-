@@ -1,0 +1,69 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Rania Rana <raniarana.rana@gmail.com>, 2024.
+
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: tr\n"
+
+#: templates/registration/base.html
+msgid "Home"
+msgstr "Ana Sayfa"
+
+#: templates/registration/base.html
+msgid "Top25"
+msgstr "En İyi 25"
+
+#: templates/registration/base.html
+msgid "Bottom25"
+msgstr "En Kötü 25"
+
+#: templates/registration/base.html
+msgid "Login"
+msgstr "Giriş"
+
+#: templates/registration/base.html
+msgid "Logout"
+msgstr "Çıkış"
+
+#: templates/registration/base.html
+msgid "Search"
+msgstr "Ara"
+
+#: templates/registration/base.html
+msgid "Watchlist"
+msgstr "İzleme Listesi"
+
+#: films/templates/films/homepage.html
+msgid "IMDB Clone"
+msgstr "IMDB Kopyası"
+
+#: films/templates/films/homepage.html
+msgid "Top 10"
+msgstr "En İyi 10"
+
+#: templates/registration/base.html
+msgid "Menu"
+msgstr "Menü"
+
+#: templates/registration/base.html
+msgid "Language"
+msgstr "Dil"
+
+#: templates/registration/base.html
+msgid "All"
+msgstr "Hepsi"
+
+#: templates/registration/base.html
+msgid "Title"
+msgstr "Başlık"
+
+#: templates/registration/base.html
+msgid "Director"
+msgstr "Yönetmen"
+
+#: templates/registration/base.html
+msgid "Star"
+msgstr "Ünlü"
